@@ -123,63 +123,46 @@
       background: radial-gradient(circle at bottom, #ffe6f0 0%, #ffffff 80%);
       z-index: 0;
     }
-    /* DP Circle */
+/* DP Circle – larger & face clearly visible */
 .dp-photo {
-  width: 160px; 
-  height: 160px;
+  width: 220px;               /* increased from 180 */
+  height: 220px;
   border-radius: 50%;
   object-fit: cover;
-  margin: 0 auto 20px auto;
-  display: none; /* will show only after reveal */
-  box-shadow: 0 0 25px rgba(255, 105, 180, 0.6);
+  object-position: center 25%;  /* lifts face a bit up */
+  margin-top: 25px;
+  border: 5px solid #ff69b4;
+  box-shadow: 0 0 30px rgba(255,105,180,0.5);
+  filter: drop-shadow(0 0 25px rgba(255,105,180,0.45));
+  display: none;               /* shown after reveal */
 }
 
-/* Slideshow Container */
+/* Slideshow container */
 .slideshow {
   width: 100%;
   max-width: 650px;
   margin: 25px auto 0 auto;
   position: relative;
-  display: none; /* will show after reveal */
-  height: 250px;
+  display: none;
+  height: 320px;               /* slightly taller for full view */
   overflow: hidden;
   border-radius: 18px;
-  box-shadow: 0 0 25px rgba(255, 105, 180, 0.2);
+  box-shadow: 0 0 25px rgba(255, 105, 180, 0.25);
 }
 
+/* Each slide */
 .slide {
   position: absolute;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;          /* full image visible */
+  object-position: center;
   opacity: 0;
-  transition: opacity 1.8s ease-in-out;
+  transition: opacity 1.8s ease-in-out; /* slower softer fade */
 }
 
 .slide.active {
   opacity: 1;
-}
-.dp-photo {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-top: 25px;
-  border: 5px solid #ff69b4;
-  box-shadow: 0 0 25px rgba(255,105,180,0.4);
-}
-.slideshow img {
-  width: 92%;
-  max-width: 500px;
-  border-radius: 20px;
-  margin-top: 25px;
-  border: 4px solid #ff69b4;
-  box-shadow: 0 0 20px rgba(255,105,180,0.35);
-  display: none;
-}
-/* Fade slideshow transition */
-.slide {
-  transition: opacity 0.8s ease-in-out;
 }
 
 /* DP soft glow highlight */
@@ -230,50 +213,33 @@
 
 
 <script>
+function revealLetter() {
   const letter = document.getElementById('letter');
   const music = document.getElementById('bgMusic');
-  
-  function revealLetter() {
-    // show letter + dp + slideshow
-    letter.classList.add('show');
-    document.getElementById('dpPhoto').style.display = 'block';
-    document.getElementById('slideShow').style.display = 'block';
+  const dp = document.getElementById('dpPhoto');
+  const slideshow = document.getElementById('slideShow');
 
-    // start music
-    if (music.paused) {
-      music.volume = 0.3;
-      music.play();
-    }
+  letter.classList.add('show');
+  dp.style.display = 'block';
+  slideshow.style.display = 'block';
 
-    // slideshow logic
-    let slideIndex = 0;
-    const slides = document.querySelectorAll(".slide");
-
-    function showSlides() {
-      slides.forEach(s => {
-        s.style.display = "none";
-        s.style.opacity = "0";
-      });
-      slideIndex++;
-      if (slideIndex > slides.length) { slideIndex = 1; }
-      slides[slideIndex-1].style.display = "block";
-      slides[slideIndex-1].style.opacity = "1";
-      setTimeout(showSlides, 3000);
-    }
-    showSlides();
+  // music play
+  if (music.paused) {
+    music.volume = 0.3;
+    music.play();
   }
 
-  // Floating hearts animation
-  const heartsContainer = document.getElementById('hearts');
+  // smoother slideshow
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  slides[currentSlide].classList.add('active');
+
   setInterval(() => {
-    const heart = document.createElement('div');
-    heart.classList.add('heart');
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.fontSize = Math.random() * 20 + 10 + 'px';
-    heart.innerText = '💖';
-    heartsContainer.appendChild(heart);
-    setTimeout(() => heart.remove(), 6000);
-  }, 400);
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+  }, 4800); // ~4.8s per image for slower transition
+}
 </script>
 </body>
 </html>
