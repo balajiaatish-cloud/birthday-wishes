@@ -137,7 +137,7 @@
   display: none;               /* shown after reveal */
 }
 
-/* Slideshow container – auto height for full photo view */
+/* Slideshow container – horizontal scrolling setup */
 .slideshow {
   width: 100%;
   max-width: 650px;
@@ -147,26 +147,23 @@
   overflow: hidden;
   border-radius: 18px;
   box-shadow: 0 0 25px rgba(255, 105, 180, 0.25);
-  background: rgba(255, 255, 255, 0.3);
-}
-.slideshow img {
-  background-color: rgba(255,255,255,0.6);
-  border-radius: 15px;
 }
 
-
-/* Each slide – ensures full photo visible */
-.slide {
+/* Wrapper for sliding track */
+.slideshow-track {
+  display: flex;
   width: 100%;
-  height: auto;
-  max-height: 450px;              /* optional limit */
-  object-fit: contain;
-  object-position: center;
-  display: block;
-  margin: 0 auto;
-  opacity: 0;
-  transition: opacity 1.8s ease-in-out;
+  transition: transform 1s ease-in-out;  /* smooth horizontal move */
 }
+
+/* Each slide */
+.slide {
+  flex: 0 0 100%;      /* each image takes full width */
+  max-height: 420px;
+  object-fit: contain; /* full image visible */
+  object-position: center;
+}
+
 
 .slide.active {
   opacity: 1;
@@ -211,12 +208,15 @@
       <p style="font-weight: 600;">With fake seriousness and real love,<br>— Aatish 💫</p>
       <!-- Slideshow Placeholder -->
 <div class="slideshow" id="slideShow">
-  <img class="slide" src="pic1.jpg">
-  <img class="slide" src="pic2.jpg">
-  <img class="slide" src="pic3.jpg">
-  <img class="slide" src="pic4.jpg">
-  <img class="slide" src="pic5.jpg">
+  <div class="slideshow-track" id="slideTrack">
+    <img class="slide" src="pic1.jpg">
+    <img class="slide" src="pic2.jpg">
+    <img class="slide" src="pic3.jpg">
+    <img class="slide" src="pic4.jpg">
+    <img class="slide" src="pic5.jpg">
+  </div>
 </div>
+
 
     </div>
   </div>
@@ -252,16 +252,15 @@ function revealLetter() {
     music.play().catch(() => {});
   }
 
-  // start slideshow
-  let currentSlide = 0;
-  const slides = document.querySelectorAll('.slide');
-  slides[currentSlide].classList.add('active');
+// sliding slideshow version (loops back to first)
+let currentSlide = 0;
+const track = document.getElementById('slideTrack');
+const slides = document.querySelectorAll('.slide');
 
-  setInterval(() => {
-    slides[currentSlide].classList.remove('active');
-    currentSlide = (currentSlide + 1) % slides.length;
-    slides[currentSlide].classList.add('active');
-  }, 4800);
+setInterval(() => {
+  currentSlide = (currentSlide + 1) % slides.length;
+  track.style.transform = `translateX(-${currentSlide * 100}%)`;
+}, 4500);  // 4.5 seconds per slide
 }
 
 </script>
